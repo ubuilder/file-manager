@@ -3,13 +3,15 @@
   import FilePond from './FilePond.svelte';
   import type { SvelteComponent } from 'svelte';
   import { goto, invalidate, invalidateAll } from '$app/navigation';
+  import NewFolder from './modals/NewFolder.svelte';
+  import RemoveFolder from './modals/RemoveFolder.svelte';
 
   export let selectedFile: any;
   let modalCreate: SvelteComponent;
   let removeModal: SvelteComponent;
   let showModal = false;
   let showModalRemove = false;
-  let newFolderName = 'New Folder';
+  let folderName = 'New Folder';
 
   function onSelect(file) {
     selectedFile = [...selectedFile, file];
@@ -25,8 +27,8 @@
   }
 
   async function onCreateFolder() {
-    console.log('somethinf', selectedFile[selectedFile.length - 1].path, newFolderName);
-    let path = `${selectedFile[selectedFile.length - 1].path ?? ''}/${newFolderName}`;
+    console.log('somethinf', selectedFile[selectedFile.length - 1].path, folderName);
+    let path = `${selectedFile[selectedFile.length - 1].path ?? ''}/${folderName}`;
     await fetch('/assets/create-dir', {
       method: 'POST',
       body: JSON.stringify({ path })
@@ -43,7 +45,7 @@
     removeModal.close();
     history.push('/assets')
   }
-  $: console.log('showmodal', newFolderName);
+  $: console.log('showmodal', folderName);
 </script>
 
 <div class="actions">
@@ -58,28 +60,11 @@
       <Icon name="folder" />New Follder
     </Button>
   </ButtonGroup>
-  <Modal bind:this={modalCreate} bind:show={showModal}>
-    <ModalBody>
-      <FormInput bind:value={newFolderName} label="Folder Name" />
-    </ModalBody>
-    <ModalFooter>
-      <ButtonGroup>
-        <Button on:click={() => modalCreate.close()}>Cancel</Button>
-        <Button on:click={onCreateFolder}>Create</Button>
-      </ButtonGroup>
-    </ModalFooter>
-  </Modal>
-  <Modal bind:this={removeModal} bind:show={showModalRemove}>
-    <ModalBody>
-      Are you sure to reomve {selectedFile[selectedFile.length - 1].name} folder?
-    </ModalBody>
-    <ModalFooter>
-      <ButtonGroup>
-        <Button on:click={() => removeModal.close()}>Cancel</Button>
-        <Button on:click={onRemoveFolder}>Remove</Button>
-      </ButtonGroup>
-    </ModalFooter>
-  </Modal>
+  <NewFolder bind:folderName on:create = {onCreateFolder}  bind:show = {showModal} bind:modal = {modalCreate} />
+  <RemoveFolder on:remove = {onRemoveFolder} bind:show  ={showModalRemove}  bind:modal = {removeModal} bind:selectedFile/>
+
+  
+  
 </div>
 
 <div>
