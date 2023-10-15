@@ -36,7 +36,7 @@
     : undefined;
   let server = {
     process: '/assets',
-    revert: '/assets',
+    revert:'/assets',
     restore: '/assets',
     load: '/',
     fetch: '/'
@@ -70,6 +70,12 @@
   function handleAddFile(err, fileItem) {
     console.log('A file has been added', fileItem);
   }
+  function  removeFiles  (event){
+    console.log('files are gona to remvoe')
+  }
+  function  removeFile  (event){
+    console.log('files are gona to remvoe')
+  }
 </script>
 
 <div class="app">
@@ -79,14 +85,14 @@
     {files}
     {server}
     oninit={handleInit}
+    {removeFiles} 
+    {removeFile} 
     onaddfile={handleAddFile}
     labelIdle="Click or Drop here"
     imagePreviewMaxHeight="100"
     credits={false}
-    imageResizeTargetWidth:
-    600,
-    imageCropAspectRatio:
-    1,
+    allow-remove = {true}
+    imageEditAllowEdit= {true},
     {imageTransformVariants}
   />
 </div>
