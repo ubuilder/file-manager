@@ -20,7 +20,9 @@ export async function load(event) {
         }
       }
       return fs;
-    } catch (error) {console.error(error)}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function sort(arr) {
@@ -33,6 +35,7 @@ export async function load(event) {
       return el;
     });
   }
+  console.log('invalidated ');
 
   let files: Dirent = JSON.parse(JSON.stringify(await readDirs(baseDir))) as Dirent;
   files = sort(files);

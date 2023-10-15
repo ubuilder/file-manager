@@ -1,7 +1,7 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { rmdirSync } from 'fs';
-import fs from 'fs'
-import path from 'path'
+import fs from 'fs';
+import path from 'path';
 const deleteFolderRecursive = function (directoryPath) {
   if (fs.existsSync(directoryPath)) {
     fs.readdirSync(directoryPath).forEach((file, index) => {
@@ -22,11 +22,9 @@ export const POST: RequestHandler = async (event) => {
   const { path } = await event.request.json();
   console.log('path: ', path);
   try {
-    deleteFolderRecursive('./static/' +path)
-    
+    deleteFolderRecursive('./static/' + path);
   } catch (error) {
-    console.log('error: ', error)
-    
+    console.log('error: ', error);
   }
   // rimraf.sync(path, { recursive: true, force: true });
   return json({ success: true });

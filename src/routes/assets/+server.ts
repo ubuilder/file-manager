@@ -5,5 +5,5 @@ export async function POST(event) {
     `./static/${formData.getAll('file')[1].name}`,
     await formData.getAll('file')[1].stream()
   );
-  return new Response(JSON.stringify({success: true}));
+  return new Response(JSON.stringify({ success: true }));
 }

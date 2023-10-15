@@ -2,7 +2,7 @@
   import { Icon, Button, Modal, FormInput, ButtonGroup, ModalFooter, ModalBody } from 'yesvelte';
   import FilePond from './FilePond.svelte';
   import type { SvelteComponent } from 'svelte';
-  import { invalidate, invalidateAll } from '$app/navigation';
+  import { goto, invalidate, invalidateAll } from '$app/navigation';
 
   export let selectedFile: any;
   let modalCreate: SvelteComponent;
@@ -32,7 +32,7 @@
       body: JSON.stringify({ path })
     }).then((res) => res);
     modalCreate.close();
-    await invalidate()
+    goto('/assets')
   }
   async function onRemoveFolder() {
     const path = selectedFile[selectedFile.length - 1].path;
@@ -40,8 +40,8 @@
       method: 'POST',
       body: JSON.stringify({ path })
     });
-    removeModal.close()
-    await invalidate()
+    removeModal.close();
+    history.push('/assets')
   }
   $: console.log('showmodal', newFolderName);
 </script>
