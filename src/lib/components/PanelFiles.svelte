@@ -34,7 +34,7 @@
       body: JSON.stringify({ path })
     }).then((res) => res);
     modalCreate.close();
-    goto('/assets')
+    goto('/').then(()=>goto('/assets'))
   }
   async function onRemoveFolder() {
     const path = selectedFile[selectedFile.length - 1].path;
@@ -43,7 +43,7 @@
       body: JSON.stringify({ path })
     });
     removeModal.close();
-    history.push('/assets')
+    goto('/').then(()=>goto('/assets'))
   }
   $: console.log('showmodal', folderName);
 </script>
