@@ -80,7 +80,7 @@
     {server}
     oninit={handleInit}
     onaddfile={handleAddFile}
-    labelIdle="Drag and Drop"
+    labelIdle="Click or Drop here"
     imagePreviewMaxHeight="100"
     credits={false}
     imageResizeTargetWidth:

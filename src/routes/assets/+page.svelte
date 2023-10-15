@@ -27,8 +27,6 @@
   <link rel = 'stylesheet' href = "https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" />
 </svelte:head>
 
-
-
 <Splitpanes style="height: 10000px" on:resized={onResized}>
   <Pane minSize={10} maxSize={50} size={20} {...splitPaneConfig[0]}>
     <Accordions>

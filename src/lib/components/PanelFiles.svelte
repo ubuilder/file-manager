@@ -1,9 +1,15 @@
 <script lang="ts">
-  import { Icon, Button } from 'yesvelte';
+  import { Icon, Button, Modal, FormInput, ButtonGroup, ModalFooter, ModalBody } from 'yesvelte';
   import FilePond from './FilePond.svelte';
-  let filePondInstance = FilePond;
+  import type { SvelteComponent } from 'svelte';
 
   export let selectedFile: any;
+  let modalCreate: SvelteComponent;
+  let removeModal: SvelteComponent;
+  let showModal = false;
+  let showModalRemove = false;
+  let newFolderName = 'New Folder';
+
   function onSelect(file) {
     selectedFile = [...selectedFile, file];
   }
@@ -16,11 +22,62 @@
     selectedFile.splice(index + 1, selectedFile.length - index);
     selectedFile = selectedFile;
   }
+
+  async function onCreateFolder() {
+    console.log('somethinf', selectedFile[selectedFile.length - 1].path, newFolderName);
+    let path = `${selectedFile[selectedFile.length - 1].path ?? ''}/${newFolderName}`;
+    await fetch('/assets/create-dir', {
+      method: 'POST',
+      body: JSON.stringify({ path })
+    }).then((res) => res);
+    modalCreate.close();
+  }
+  async function onRemoveFolder() {
+    const path = selectedFile[selectedFile.length - 1].path;
+    await fetch('/assets/remove-dir', {
+      method: 'POST',
+      body: JSON.stringify({ path })
+    });
+  }
+  $: console.log('showmodal', newFolderName);
 </script>
 
-<Button disabled={selectedFile.length == 1} on:click={goBack}>
-  <Icon name="arrow-left" />back
-</Button>
+<div class="actions">
+  <Button disabled={selectedFile.length == 1} on:click={goBack}>
+    <Icon name="arrow-left" />back
+  </Button>
+  <ButtonGroup>
+    <Button on:click={() => (showModalRemove = true)}>
+      <Icon name="folder" />Remove folder
+    </Button>
+    <Button on:click={() => (showModal = true)}>
+      <Icon name="folder" />New Follder
+    </Button>
+  </ButtonGroup>
+  <Modal bind:this={modalCreate} bind:show={showModal}>
+    <ModalBody>
+      <FormInput bind:value={newFolderName} label="Folder Name" />
+    </ModalBody>
+    <ModalFooter>
+      <ButtonGroup>
+        <Button on:click={() => modalCreate.close()}>Cancel</Button>
+        <Button on:click={onCreateFolder}>Create</Button>
+      </ButtonGroup>
+    </ModalFooter>
+  </Modal>
+  <Modal bind:this={removeModal} bind:show={showModalRemove}>
+    <ModalBody>
+      Are you sure to reomve {selectedFile[selectedFile.length - 1].name} folder?
+    </ModalBody>
+    <ModalFooter>
+      <ButtonGroup>
+        <Button on:click={() => removeModal.close()}>Cancel</Button>
+        <Button on:click={onRemoveFolder}>Remove</Button>
+      </ButtonGroup>
+    </ModalFooter>
+  </Modal>
+</div>
+
 <div>
   {#each selectedFile as file, index}
     <Icon name="chevron-right" />
@@ -39,13 +96,13 @@
         </div>
       </button>
     {:else}
-    <div style = 'min-width: 200px ; '>
-        <FilePond filePath =  {file.path} />
+      <div style="min-width: 200px ; ">
+        <FilePond filePath={file.path} />
       </div>
     {/if}
   {/each}
 </div>
-<FilePond filePath = '' />
+<FilePond filePath="" />
 
 <style>
   .folder {
@@ -82,5 +139,10 @@
   }
   .breadcrumb-link:hover {
     color: #2800ef;
+  }
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 </style>

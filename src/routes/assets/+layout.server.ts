@@ -8,16 +8,15 @@ export async function load(event) {
     fs.mkdirSync(baseDir, { recursive: true });
   }
 
-  async function readDirs(p: string) {
+  async function readDirs(p: string, r: string = './') {
     try {
       let fs = await readdir(p, { withFileTypes: true });
       for (let file of fs) {
-        file.path = path.join(p, file.name);
-        console.log('filePath: ', file.path)
+        file.path = path.join(r, file.name);
         file.type = 'file';
         if (file.isDirectory()) {
           file.type = 'dir';
-          file.files = await readDirs(file.path);
+          file.files = await readDirs(path.join(p, file.name), file.path);
         }
       }
       return fs;
